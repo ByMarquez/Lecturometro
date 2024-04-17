@@ -1,0 +1,107 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.formulario {
+    margin-top: v.$separacion;
+
+    .campo {
+        display: flex;
+        align-items: center;
+        margin: 0 0 v.$separacionPequenia 0;
+    }
+
+    label {
+        flex: 0 0 v.$separacion*2;
+    }
+
+    input {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        background-color: v.$grisClaro;
+    }
+
+    input[type="submit"] {
+        @include m.boton(v.$verde, v.$blanco)
+    }
+}
+
+.formulario_btnNaranja {
+    margin-top: v.$separacionPequenia;
+
+    input[type="submit"] {
+        @include m.boton(v.$naranja, v.$blanco)
+    }
+}
+
+
+.buscar {
+
+    @include m.TituloPrincipal {
+        display: flex;
+        flex-direction: column;
+        margin-top: v.$separacion;
+
+
+        input[type="text"] {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background-color: v.$grisClaro;
+        }
+
+        input[type="submit"] {
+            margin-top: 2rem;
+            @include m.boton(v.$verde, v.$blanco)
+        }
+
+
+    }
+
+    @include m.tablet {
+        display: flex;
+        flex-direction: row;
+        margin-top: v.$separacion;
+
+
+        input[type="text"] {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background-color: v.$grisClaro;
+        }
+
+        input[type="submit"] {
+            @include m.boton(v.$verde, v.$blanco)
+        }
+    }
+
+
+}
+
+
+.formulario-lista {
+    select {
+        background-color: lighten(v.$verde, 50);
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        text-transform: uppercase;
+        font-weight: v.$negritas;
+        font-size: v.$separacionPequenia;
+    }
+}
+
+.formulario-crear {
+    margin-top: 0;
+    textarea {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        background-color: v.$grisClaro;
+    }
+    input[type="submit"] {
+        @include m.boton(v.$verde, v.$blanco);
+        margin-bottom: v.$separacionPequenia;
+    }
+}

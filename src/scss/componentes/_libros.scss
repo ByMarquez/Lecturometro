@@ -1,0 +1,242 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.listado-libros {
+    margin-top: v.$separacionPequenia;
+
+    .libro {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+
+        text-align: center;
+        padding: 1rem;
+        background-color: lighten($color: v.$verde, $amount: 50);
+        margin-bottom: v.$separacionPequenia;
+
+        img {
+            height: 20rem;
+            max-height: 20rem;
+            width: auto;
+        }
+
+        .contenido-libro {
+
+            li:first-of-type {
+                font-weight: v.$negritas;
+                font-size: v.$separacionPequenia;
+            }
+
+            li {
+                margin-top: 1rem;
+                list-style: none;
+                padding: 0;
+                text-transform: uppercase;
+            }
+
+            li:last-of-type {
+                margin-bottom: v.$separacionPequenia;
+            }
+        }
+
+        .contenido-boton {
+
+            //margin-top: auto;
+            a {
+                @include m.boton(v.$verde, v.$blanco);
+            }
+
+        }
+    }
+
+
+    @include m.tablet {
+        @include m.grid(2, v.$separacionPequenia);
+    }
+
+    @include m.desktop {
+        @include m.grid(3, v.$separacionPequenia);
+    }
+}
+
+
+
+.no-libros {
+    text-transform: uppercase;
+    font-weight: v.$negritas;
+    display: flex;
+    justify-content: center;
+
+    a {
+        margin-left: v.$separacionPequenia;
+        color: v.$verde;
+    }
+}
+
+.simbolo {
+    display: flex;
+    justify-content: center;
+    font-weight: v.$negritas;
+    color: v.$negro;
+    font-size: 10rem;
+    padding: 0;
+    margin: 0;
+}
+
+
+.libro-registrar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+    padding: 1rem;
+    background-color: lighten($color: v.$verde, $amount: 50);
+    margin-bottom: v.$separacionPequenia;
+
+    img {
+        max-width: 50%;
+        max-height: 50%;
+        padding: v.$separacionPequenia;
+    }
+
+    .contenido-libro {
+
+        li:first-of-type {
+            font-weight: v.$negritas;
+            font-size: v.$separacionPequenia;
+        }
+
+        li {
+            margin-top: 1rem;
+            list-style: none;
+            padding: 0;
+            text-transform: uppercase;
+        }
+    }
+}
+
+
+
+.listado-lecturas {
+    margin-top: v.$separacionPequenia;
+
+    .libro {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+
+        text-align: center;
+        padding: 1rem;
+        background-color: lighten($color: v.$verde, $amount: 50);
+        margin-bottom: v.$separacionPequenia;
+
+        .imagen {
+            text-align: center;
+
+            img {
+                height: auto;
+                max-height: 20rem;
+                width: auto;
+
+            }
+        }
+
+        .contenido-libro {
+
+            li:first-of-type {
+                font-weight: v.$negritas;
+                font-size: v.$separacionPequenia;
+            }
+
+            li {
+                margin-top: 1rem;
+                list-style: none;
+                padding: 0;
+                text-transform: uppercase;
+            }
+
+            li:last-of-type {
+                margin-bottom: v.$separacionPequenia;
+            }
+        }
+
+        .contenido-boton {
+            //margin-top: auto;
+
+            .formulario-actualizar {
+                margin-top: 0;
+
+                input[type="submit"] {
+                    @include m.boton(v.$naranja, v.$blanco)
+                }
+            }
+
+            .formulario-eliminar {
+                margin-top: 0;
+
+                input[type="submit"] {
+                    @include m.boton(v.$rojo, v.$blanco)
+                }
+            }
+        }
+
+        @include m.tablet {
+            @include m.grid(3, v.$separacionPequenia);
+        }
+    }
+
+}
+
+
+.libro-estadisticas {
+    @include m.grid(2, v.$separacionPequenia);
+    padding: 1rem;
+    background-color: lighten($color: v.$verde, $amount: 50);
+    margin-top: v.$separacionPequenia;
+
+
+    .imagen {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        place-self: center;
+
+        img {
+            height: auto;
+            max-height: 15rem;
+            width: auto;
+
+        }
+    }
+
+    .libro {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        text-align: center;
+        justify-content: space-between;
+
+        .contenido-libro {
+            margin-bottom: 1rem;
+
+            .titulo {
+                font-size: v.$separacionPequenia;
+                font-weight: v.$negritas;
+            }
+        }
+    }
+
+    .contenido-boton {
+
+        //margin-top: auto;
+        a {
+            @include m.boton(v.$verde, v.$blanco);
+        }
+
+    }
+    
+}

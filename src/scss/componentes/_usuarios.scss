@@ -1,0 +1,19 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.contenedor-usuarios {
+    .usuario {
+        padding: 1rem;
+        margin-top: v.$separacionPequenia;
+        background-color: lighten($color: v.$verde, $amount: 50);
+        display: flex;
+        justify-content: space-between;
+        font-size: 2rem;
+        font-weight: v.$negritas;
+        div:first-of-type{
+            max-width: 70%;
+        }
+    }
+    
+    
+}

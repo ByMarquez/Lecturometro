@@ -1,0 +1,1 @@
+<a class="logo" href="/dashboard">Lecturómetro</a>

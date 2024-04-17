@@ -1,0 +1,62 @@
+@use 'base/mixins' as m;
+@use 'base/variables' as v;
+
+h1, h2, h3, .titulo-pagina{
+    text-align: center;
+    margin: v.$separacion 0 v.$separacion 0;
+}
+
+.lecturometro{
+    
+    background: linear-gradient(to right, v.$verde, v.$verdeOscuro);
+    color: transparent;
+    background-clip: text;
+    @include m.tablet{
+        font-size: v.$separacion*2;
+    }
+
+}
+
+.navegacion-principal{
+    background-color: v.$verde;
+    margin-bottom: v.$separacionPequenia;
+    
+    .logo{
+        font-size: 4rem;
+        margin: 0 0 0 0;
+        color: v.$blanco;
+        font-weight: v.$negritas;
+    }
+    .enlaces{
+        
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        a{
+            padding: 1.5rem;
+            color: v.$blanco;
+        }
+        a:not(:first-of-type):hover {
+            background-color: v.$verdeOscuro;
+        }
+        
+    }
+    @include m.tablet{
+        .enlaces {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+
+            text-align: center;
+        }
+        
+        .enlaces a:first-of-type {
+            margin-right: auto; /* Anula el alineamiento para el primer enlace */
+        }
+        a{
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+

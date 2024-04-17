@@ -1,0 +1,28 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+/* Estilo para el contenedor del comentario */
+.comentario {
+    //border: .5rem solid v.$verdeOscuro;
+    border-radius: 1rem;
+    background-color: lighten(v.$verde, 50%);
+    padding: v.$separacionPequenia;
+    margin-bottom: v.$separacionPequenia;
+    @include m.grid(2, v.$separacionPequenia);
+    font-weight: v.$negritas;
+    color: v.$gris;
+    .usuario {
+        text-transform: uppercase;
+        margin-bottom: .5rem;
+    }
+    .fecha {
+        text-align: end;
+    }
+    .contenido {
+        color: v.$negro;
+        font-size: 1.5rem;
+    }
+}
+.comentario:hover {
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.6);
+    transition: transform 0.3s ease;
+}

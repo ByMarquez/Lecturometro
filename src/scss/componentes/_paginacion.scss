@@ -1,0 +1,23 @@
+@use 'base/mixins' as m;
+@use 'base/variables' as v;
+
+.paginacion{
+    display: flex;
+    justify-content: center;
+    padding: v.$separacion;
+    span{
+        padding: v.$separacionPequenia;
+    }
+    a{
+        @include m.boton(v.$verde, v.$blanco);
+        width: auto;
+        padding: 1.5rem;
+    }
+    @include m.tablet {
+        a{
+            @include m.boton(v.$verde, v.$blanco);
+            padding: 1.5rem 4rem;
+        }
+    }
+    
+}
