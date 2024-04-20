@@ -1,5 +1,5 @@
 <?php include_once __DIR__ . "/header-dashboard.php"; ?>
-<h1><?php echo $_SESSION["nombre"]; ?></h1>
+<h2><?php echo $_SESSION["nombre"];?> ID:<?php echo $_SESSION["id"]; ?></h2>
 
 <div class="contenedor">
     <div class="contenedor-md">

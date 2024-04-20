@@ -288,6 +288,26 @@ class ActiveRecord {
         // retornar los resultados
         return $array;
     }
+
+    public function actualizarLibro($isbnOriginal, $isbnNuevo) {
+        // Sanitizar los datos
+        $atributos = $this->sanitizarAtributos();
+    
+        // Iterar para ir agregando cada campo de la BD
+        $valores = [];
+        foreach($atributos as $key => $value) {
+            $valores[] = "{$key}='{$value}'";
+        }
+
+        $query = "UPDATE " . static::$tabla ." SET ";
+        $query .= "id = '".$isbnNuevo."', ";
+        $query .=  join(', ', $valores );
+        $query .= " WHERE id = '" . self::$db->escape_string($isbnOriginal) . "' ";
+        $query .= " LIMIT 1 "; 
+    
+        $resultado = self::$db->query($query);
+        return $resultado;
+    }
 }
 
 

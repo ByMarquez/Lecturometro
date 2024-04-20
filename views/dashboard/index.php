@@ -2,7 +2,6 @@
 
 <div class="contenedor">
     <div class="contenedor-sm contenedor-md">
-        <?php include_once __DIR__ . "/../templates/alertas.php"; ?>
         <form class="buscar" method="GET">
             <input type="text" id="buscar" placeholder="Buscar..." name="buscar">
             <input type="submit" value="Buscar">

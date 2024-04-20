@@ -2,9 +2,10 @@
 
 namespace Controllers;
 
-use Classes\Email;
-use Model\Usuario;
 use MVC\Router;
+use Classes\Email;
+use Model\Permiso;
+use Model\Usuario;
 
 class loginController
 {
@@ -29,6 +30,11 @@ class loginController
                         $_SESSION['nombre'] = $usuario->nombre;
                         $_SESSION['correo'] = $usuario->correo;
                         $_SESSION['login'] = true;
+                        $permiso = Permiso::where("id_usuario", $usuario->id);
+                        if($permiso){
+                            $_SESSION['registrar_usuarios'] = $permiso->registrar_usuarios;
+                            $_SESSION['registrar_libro'] = $permiso->registrar_libro;
+                        }
                         //redireccionar
                         header('location: /dashboard');
                     }else{
@@ -176,10 +182,6 @@ class loginController
 
     public static function mensaje(Router $router)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-        }
-
         $router->render('auth/mensaje', [
             'titulo'=> 'Cuenta Creada'
         ]);   

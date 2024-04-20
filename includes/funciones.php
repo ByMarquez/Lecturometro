@@ -19,3 +19,13 @@ function isAuth() : void {
         header('Location: /');
     }
 }
+function isAuth_registrar_libro() : void {
+    if(!isset($_SESSION['registrar_libro']) || !boolval($_SESSION['registrar_libro'])) {
+        header('Location: /dashboard');
+    }
+}
+function isAuth_registrar_usuarios() : void {
+    if(!isset($_SESSION['registrar_usuarios']) || !boolval($_SESSION['registrar_usuarios'])) {
+        header('Location: /dashboard');
+    }
+}

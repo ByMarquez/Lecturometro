@@ -2,9 +2,11 @@
 
 namespace Controllers;
 
+use Model\Usuario;
 use MVC\Router;
 use Model\Libro;
 use Model\Lectura;
+use Model\Permiso;
 use Model\Comentario;
 use Model\ActiveRecord;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -21,7 +23,8 @@ class dashboardController extends ActiveRecord
         //$totalLibros=count($libros);
         $totalLibros = count($librosRegistros);
 
-        $paginaActual = s($_GET['pagina']) ? $_GET['pagina'] : 1;
+        //$paginaActual = s($_GET['pagina']) ? $_GET['pagina'] : 1;
+        $paginaActual = isset($_GET['pagina']) ? s($_GET['pagina']) : 1;
 
         if (!is_numeric($paginaActual)) {
             header("location: /dashboard");
@@ -34,8 +37,9 @@ class dashboardController extends ActiveRecord
 
 
 
-        $buscar = s($_GET['buscar']);
-        if ($buscar) {
+
+        if (isset($_GET['buscar'])) {
+            $buscar = s($_GET['buscar']);
             //verificar que el ISBN existe
             if (is_numeric($buscar)) {
                 $libros = Libro::startBy_page('id', $buscar, $comienzo, $librosPorPagina);
@@ -57,7 +61,7 @@ class dashboardController extends ActiveRecord
 
         $numPaginas = ceil($totalLibros / $librosPorPagina);
 
-        if ($paginaActual > $numPaginas) {
+        if ($paginaActual > $numPaginas & $numPaginas != 0) {
             header("location: /dashboard");
         }
         $router->render("dashboard/index", [
@@ -158,6 +162,12 @@ class dashboardController extends ActiveRecord
     {
         session_start();
         isAuth();
+        isAuth_registrar_libro();
+        $permiso3 = Permiso::where("id_usuario", $_SESSION["id"]);
+        if (!boolval($permiso3->registrar_libro)) {
+            $_SESSION = [];
+            header('location: /');
+        }
         $alertas = [];
         //creamos el objeto
         $libro = new Libro();
@@ -243,109 +253,254 @@ class dashboardController extends ActiveRecord
     {
         session_start();
         isAuth();
+        $permiso3 = Permiso::where("id_usuario", $_SESSION["id"]);
+        if (!boolval($permiso3->registrar_libro)) {
+            $_SESSION = [];
+            header('location: /');
+        }
         $alertas = [];
         //creamos el objeto
         $libro = new Libro();
-        //variable de imagen
-        $imagen = $_FILES['imagen'];
 
         if (isset($_GET["id_actualizacion"])) {
             $consulta = Libro::where("id", $_GET["id_actualizacion"]);
             $libro = $consulta;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            //Verificar que no existan alertas
-            $consulta = Libro::where("id", $_POST["id"]);
-            $_POST["imagen"] = $consulta->imagen;
-            $libro->sincronizar($_POST);
+            if (isset($_POST["isbn_eliminar"])) {
+                //sincronizar post
+                $libro->setId(s($_POST["isbn_eliminar"]));
 
-            //si no hay alertas se inicia el proceso de actualizacion
-            $alertas = $libro->validarRegistrar();
-            if (empty($alertas)) {
-                //verificar que el isb existe
-                $existeISBN = Libro::where('id', $libro->id);
-                if ($existeISBN) {
+                //si no hay alertas se inicia el proceso de actualizacion sin cambio de ISBN
+                $alertas = $libro->validarISBNeliminar();
 
-                    //verificar que la imagen existe
-                    if (!$imagen['name']) {
-                        //hacer la actualizacion dejando la imagen
-                        if ($consulta != $libro) {
+                if (empty($alertas)) {
+                    $resultado = $libro->eliminar();
 
+                    if ($resultado) {
+                        $libro = [];
+                        //dar una alerta
+                        Libro::setAlerta('exito', 'Libro Eliminado');
+                        $alertas = Libro::getAlertas();
+                    }
+                }
+            } else {
+                //Verificar que no existan alertas
+                $consulta = Libro::where("id", $_POST["id"]);
+                $_POST["imagen"] = $consulta->imagen;
+                $libro->sincronizar($_POST);
+                //ACTUALIZACION CON CAMBIO DE ISBN
+                //si no hay alertas se inicia el proceso de actualizacion sin cambio de ISBN
+                $alertas = $libro->validarRegistrar();
 
-                            if (isset($libro->id)) {
-                                $resultado = $libro->guardar();
-                                if ($resultado) {
-                                    //dar una alerta
-                                    Libro::setAlerta('exito', 'Libro Actualizado');
-                                    $alertas = Libro::getAlertas();
+                if (empty($alertas) & !isset($_POST["cambiar_isbn"])) {
+                    //verificar que el isbn existe
+                    $existeISBN = Libro::where('id', $libro->id);
+                    if ($existeISBN) {
+                        $imagen = $_FILES['imagen'];
+                        //verificar que la imagen existe
+                        if (!$imagen['name']) {
+                            //hacer la actualizacion dejando la imagen
+                            if ($consulta != $libro) {
+                                if (isset($libro->id)) {
+                                    debuguear($libro);
+                                    $resultado = $libro->guardar();
+                                    if ($resultado) {
+                                        //dar una alerta
+                                        Libro::setAlerta('exito', 'Libro Actualizado');
+                                        $alertas = Libro::getAlertas();
+                                    }
                                 }
+
+
+                            } else {
+                                //objetos iguales
+                                Libro::setAlerta('error', 'Error al actualizar, Mismos datos');
+                                $alertas = Libro::getAlertas();
                             }
 
-
                         } else {
-                            //objetos iguales
-                            Libro::setAlerta('error', 'Error al actualizar, Mismos datos');
-                            $alertas = Libro::getAlertas();
-                        }
-
-                    } else {
-                        //verificar que el archivo si sea una imagen
-                        if (!str_contains($imagen['type'], 'image')) {
-                            Libro::setAlerta('error', 'El archivo no es una imagen');
-                            $alertas = Libro::getAlertas();
-                        } else {
-                            //veriicar tamaño de la imagen
-                            $medida = 2 * 1000 * 1000;
-                            if ($imagen['size'] > $medida) {
-                                Libro::setAlerta('error', 'La imagen no debe superar los 2MB');
+                            //verificar que el archivo si sea una imagen
+                            if (!str_contains($imagen['type'], 'image')) {
+                                Libro::setAlerta('error', 'El archivo no es una imagen');
                                 $alertas = Libro::getAlertas();
                             } else {
-                                //eliminar laimagen anterior
-
-                                $consulta = Libro::where("id", $_POST["id"]);
-                                // Obtener la ruta completa de la imagen a eliminar
-                                $rutaImagenEliminar = '../public/build/imagenes/' . $consulta->imagen;
-                                // Verificar si el archivo existe antes de intentar eliminarlo
-                                if (file_exists($rutaImagenEliminar)) {
-                                    // Eliminar la imagen del servidor
-                                    unlink($rutaImagenEliminar);
-                                }
-
-
-                                //crear carpeta
-                                $carpetaImagenes = '../public/build/imagenes/';
-                                if (!is_dir($carpetaImagenes)) {
-                                    mkdir($carpetaImagenes);
-                                }
-                                //generar un nombre unico
-                                $nombreImagen = md5(uniqid(rand(), true)) . '.jpg';
-                                //crear variables
-                                $rutaImagenOriginal = $imagen['tmp_name'];
-                                $rutaImagenDestino = $carpetaImagenes . $nombreImagen;
-
-                                //abrir la imagen
-                                $img = Image::make($rutaImagenOriginal);
-                                // Reescalar la imagen a un máximo de 400 píxeles de ancho
-                                $img->resize(400, null, function ($constraint) {
-                                    $constraint->aspectRatio(); // Mantener la proporción de aspecto
-                                });
-                                //pasar el nombre al objeto para despues hacer la inserccion a la bd
-                                $libro->setImagen($nombreImagen);
-                                // Reducir la calidad de la imagen y guardarla en el servidor
-                                $img->save($rutaImagenDestino, 50); // 50 es el nivel de calidad (0 a 100)
-                                //guardar el registro en la base de datos
-                                $resultado = $libro->guardar();
-                                if ($resultado) {
-                                    //dar una alerta
-                                    Libro::setAlerta('exito', 'Libro Actualizado');
+                                //veriicar tamaño de la imagen
+                                $medida = 2 * 1000 * 1000;
+                                if ($imagen['size'] > $medida) {
+                                    Libro::setAlerta('error', 'La imagen no debe superar los 2MB');
                                     $alertas = Libro::getAlertas();
+                                } else {
+                                    //eliminar laimagen anterior
+
+                                    $consulta = Libro::where("id", $_POST["id"]);
+                                    // Obtener la ruta completa de la imagen a eliminar
+                                    $rutaImagenEliminar = '../public/build/imagenes/' . $consulta->imagen;
+                                    // Verificar si el archivo existe antes de intentar eliminarlo
+                                    if (file_exists($rutaImagenEliminar)) {
+                                        // Eliminar la imagen del servidor
+                                        unlink($rutaImagenEliminar);
+                                    }
+
+
+                                    //crear carpeta
+                                    $carpetaImagenes = '../public/build/imagenes/';
+                                    if (!is_dir($carpetaImagenes)) {
+                                        mkdir($carpetaImagenes);
+                                    }
+                                    //generar un nombre unico
+                                    $nombreImagen = md5(uniqid(rand(), true)) . '.jpg';
+                                    //crear variables
+                                    $rutaImagenOriginal = $imagen['tmp_name'];
+                                    $rutaImagenDestino = $carpetaImagenes . $nombreImagen;
+
+                                    //abrir la imagen
+                                    $img = Image::make($rutaImagenOriginal);
+                                    // Reescalar la imagen a un máximo de 400 píxeles de ancho
+                                    $img->resize(400, null, function ($constraint) {
+                                        $constraint->aspectRatio(); // Mantener la proporción de aspecto
+                                    });
+                                    //pasar el nombre al objeto para despues hacer la inserccion a la bd
+                                    $libro->setImagen($nombreImagen);
+                                    // Reducir la calidad de la imagen y guardarla en el servidor
+                                    $img->save($rutaImagenDestino, 50); // 50 es el nivel de calidad (0 a 100)
+                                    //guardar el registro en la base de datos
+                                    $resultado = $libro->guardar();
+                                    if ($resultado) {
+                                        //dar una alerta
+                                        Libro::setAlerta('exito', 'Libro Actualizado');
+                                        $alertas = Libro::getAlertas();
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        Libro::setAlerta('error', 'Error al actualizar, No existe Libro con ese ISBN');
+                        $alertas = Libro::getAlertas();
                     }
                 } else {
-                    Libro::setAlerta('error', 'Error al actualizar, No existe Libro con ese ISBN');
-                    $alertas = Libro::getAlertas();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    //se cambia el ISBN
+                    //tenemos el get con el id original
+                    //tenemos el objeto libro con lo que enviamos via post, con el isbn nuevo
+                    //cualquier error lo mandamos a la url de index
+                    //verificar que el isbn original del post existe
+                    $isbnOriginal = $_POST["isbn_ori"];
+                    $existeISBN = Libro::where('id', $isbnOriginal);
+                    if ($existeISBN) {
+                        //si existe el isbn que se va a editar
+                        $libro->sincronizar($_POST);
+                        $aux = $existeISBN;
+                        $alertas = $libro->validarRegistrar();
+                        if (empty($alertas)) {
+                            //validar si si existe el isbn original
+                            if ($existeISBN) {
+                                $imagen = $_FILES['imagen'];
+                                //verificar que la imagen existe
+                                if (!$imagen['name']) {
+                                    $libro->setImagen($existeISBN->imagen);
+                                    //hacer la actualizacion dejando la imagen
+                                    if ($existeISBN != $libro) {
+                                        //que el isbn del post no sea nulo
+                                        if (isset($libro->id)) {
+                                            $resultado = $libro->actualizarLibro($isbnOriginal, $libro->id);
+
+                                            if ($resultado) {
+                                                //dar una alerta
+                                                Libro::setAlerta('exito', 'Libro Actualizado');
+                                                $alertas = Libro::getAlertas();
+                                            }
+                                        }
+                                    } else {
+                                        //objetos iguales
+                                        Libro::setAlerta('error', 'Error al actualizar, desmarque la casilla');
+                                        $alertas = Libro::getAlertas();
+                                    }
+
+                                } else {
+                                    //verificar que el archivo si sea una imagen
+                                    if (!str_contains($imagen['type'], 'image')) {
+                                        Libro::setAlerta('error', 'El archivo no es una imagen');
+                                        $alertas = Libro::getAlertas();
+                                    } else {
+                                        //veriicar tamaño de la imagen
+                                        $medida = 2 * 1000 * 1000;
+                                        if ($imagen['size'] > $medida) {
+                                            Libro::setAlerta('error', 'La imagen no debe superar los 2MB');
+                                            $alertas = Libro::getAlertas();
+                                        } else {
+                                            //eliminar laimagen anterior
+
+                                            //obtener de la bd el libro original
+                                            $consulta = Libro::where("id", $_POST["id"]);
+                                            // Obtener la ruta completa de la imagen a eliminar
+                                            $rutaImagenEliminar = '../public/build/imagenes/' . $consulta->imagen;
+                                            // Verificar si el archivo existe antes de intentar eliminarlo
+                                            if (file_exists($rutaImagenEliminar)) {
+                                                // Eliminar la imagen del servidor
+                                                unlink($rutaImagenEliminar);
+                                            }
+
+
+                                            //crear carpeta
+                                            $carpetaImagenes = '../public/build/imagenes/';
+                                            if (!is_dir($carpetaImagenes)) {
+                                                mkdir($carpetaImagenes);
+                                            }
+                                            //generar un nombre unico
+                                            $nombreImagen = md5(uniqid(rand(), true)) . '.jpg';
+                                            //crear variables
+                                            $rutaImagenOriginal = $imagen['tmp_name'];
+                                            $rutaImagenDestino = $carpetaImagenes . $nombreImagen;
+
+                                            //abrir la imagen
+                                            $img = Image::make($rutaImagenOriginal);
+                                            // Reescalar la imagen a un máximo de 400 píxeles de ancho
+                                            $img->resize(400, null, function ($constraint) {
+                                                $constraint->aspectRatio(); // Mantener la proporción de aspecto
+                                            });
+                                            //pasar el nombre al objeto para despues hacer la inserccion a la bd
+                                            $libro->setImagen($nombreImagen);
+                                            // Reducir la calidad de la imagen y guardarla en el servidor
+                                            $img->save($rutaImagenDestino, 50); // 50 es el nivel de calidad (0 a 100)
+                                            //guardar el registro en la base de datos
+                                            $isbnOriginal = $_POST["isbn_ori"];
+                                            $aux = new Libro();
+                                            $aux->sincronizar($_POST);
+
+                                            $resultado = $libro->actualizarLibro($isbnOriginal, $aux->id);
+                                            if ($resultado) {
+                                                //dar una alerta
+                                                Libro::setAlerta('exito', 'Libro Actualizado');
+                                                $alertas = Libro::getAlertas();
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                Libro::setAlerta('error', 'Error al actualizar, No existe Libro con ese ISBN');
+                                $alertas = Libro::getAlertas();
+                            }
+                        }
+                    }//si existe isbn
+                    else {
+                        //objetos iguales
+                        Libro::setAlerta('error', 'Error al actualizar, El isbn no existe');
+                        $alertas = Libro::getAlertas();
+                    }
                 }
             }
         }//fin POST
@@ -363,7 +518,7 @@ class dashboardController extends ActiveRecord
         //libro que mas registran para leer
         $query = "SELECT lecturas.libros_id, COUNT(*) AS total_registros, libros.titulo, libros.autor,libros.paginas, libros.imagen FROM lecturas JOIN libros ON lecturas.libros_id = libros.id GROUP BY lecturas.libros_id ORDER BY total_registros DESC LIMIT 10;";
         $resultado = Comentario::sqlAvanzado($query);
-        $resultado2=null;
+        $resultado2 = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             switch ($_POST["opciones"]) {
@@ -401,7 +556,7 @@ class dashboardController extends ActiveRecord
                     header("location: /estadisticas");
             }
         }
-        
+
         $router->render("dashboard/estadisticas", [
             "titulo" => "Estadisticas",
             "resultado" => $resultado,
@@ -448,6 +603,135 @@ class dashboardController extends ActiveRecord
             "titulo" => "Libro",
             'libro' => $libro,
             'comentarios' => $comentarios,
+            'alertas' => $alertas,
+        ]);
+    }
+    public static function permisos(Router $router)
+    {
+        session_start();//iniciar la sesion
+        isAuth();//verificar que este autenticado
+        isAuth_registrar_usuarios();//verificar permisos en la sesion
+        //verificar en la base de datos
+        $permiso3 = Permiso::where("id_usuario", $_SESSION["id"]);
+        if (!boolval($permiso3->registrar_usuarios)) {
+            $_SESSION = [];
+            header('location: /');
+        }
+
+        $alertas = [];
+        $permiso = new Permiso();
+        $permiso2 = new Permiso();
+
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['id_usuario_crear'])) {
+                $permiso->sincronizar($_POST);
+                $permiso->set_id_usuario($_POST['id_usuario_crear']);
+                //verificar errores
+                $alertas = $permiso->validarPermiso();
+                if (empty($alertas)) {
+                    //el usuario existe
+                    $query = Usuario::where("id", $permiso->id_usuario);
+                    if ($query) {
+                        //el usuario ya esta en la tabla de permisos
+                        $query = Permiso::where("id_usuario", $permiso->id_usuario);
+                        //crear el permiso
+                        if (!$query) {
+                            $permiso->guardar();
+                        } else {
+                            //el usuario ya esta agregado en la tabla de permisos
+                            Usuario::setAlerta('error', 'Ya hay un usuario registrado');
+                            $alertas = Usuario::getAlertas();
+                        }
+                    } else {
+                        //alerta el usuario no existe
+                        Usuario::setAlerta('error', 'El usuario no existe');
+                        $alertas = Usuario::getAlertas();
+                    }
+
+                }
+            } else {
+                if (isset($_POST['id_usuario_eliminar'])) {
+                    $permiso->set_id_usuario($_POST['id_usuario_eliminar']);
+                    //verificar errores en el id
+                    $alertas = $permiso->validarEliminar();
+                    if (empty($alertas)) {
+                        //el usuario existe
+                        $query = Usuario::where("id", $permiso->id_usuario);
+                        if ($query) {
+                            //el usuario ya esta en la tabla de permisos
+                            $query = Permiso::where("id_usuario", $permiso->id_usuario);
+                            //crear el permiso
+                            if ($query) {
+                                $permiso = $query;
+                                $permiso->eliminar();
+                            } else {
+                                //el usuario ya esta agregado en la tabla de permisos
+                                Usuario::setAlerta('error', 'El usuario no tiene privilegios');
+                                $alertas = Usuario::getAlertas();
+                            }
+                        } else {
+                            //alerta el usuario no existe
+                            Usuario::setAlerta('error', 'El usuario no existe');
+                            $alertas = Usuario::getAlertas();
+                        }
+
+                    }
+                } else {
+                    //actualizar
+                    //crear un array con los datos del post
+                    $nuevoArreglo = [];
+                    foreach ($_POST['usuario'] as $usuarioID => $usuario) {
+                        $nuevoArreglo[] = [
+                            'id' => $usuario['id'],
+                            'registrar_libro' => $usuario['registrar_libro'],
+                            'registrar_usuarios' => $usuario['registrar_usuarios'],
+                            'id_usuario' => $usuario['id_usuario']
+                        ];
+                    }
+
+
+
+
+
+
+
+                    //traer los datos directamente de la bd
+                    $permiso = Permiso::startBy("1", "1");
+                    //verificar si tienen el mismo tamaño
+                    if (count($permiso) == count($nuevoArreglo)) {
+                        //verificar que el dato del post no sea igual al que esta en la bd, sino no tiene caso actualizar
+                        foreach ($nuevoArreglo as $indice => $elemento) {
+                            $objeto = $permiso[$indice];
+                            if (
+                                $elemento["id"] == $objeto->id &&
+                                $elemento["registrar_libro"] == $objeto->registrar_libro &&
+                                $elemento["registrar_usuarios"] == $objeto->registrar_usuarios &&
+                                $elemento["id_usuario"] == $objeto->id_usuario
+                            ) {
+                            } else {
+                                //verificar alertas
+                                $permiso2->sincronizar($elemento);
+                                $alertas = $permiso2->validarActualizar();
+                                if (empty($alertas)) {
+                                    //actualizar
+                                    $permiso2->guardar();
+                                }
+                            }
+                        }
+                    } else {
+                        //error al actualizar
+                    }
+                }
+            }
+
+        }
+        $query = "SELECT permisos.*, usuarios.nombre, usuarios.correo FROM permisos LEFT JOIN usuarios ON usuarios.id = permisos.id_usuario;";
+        $usuarios = Permiso::sqlAvanzado($query);
+
+        $router->render("dashboard/permisos", [
+            "titulo" => "Admin",
+            "usuarios" => $usuarios,
             'alertas' => $alertas,
         ]);
     }

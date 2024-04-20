@@ -22,7 +22,36 @@ class Libro extends ActiveRecord
             $this->imagen = $imagen;
         }
     }
+    public function setId($id)
+    {
+        //asignar al atributo imagen el nombre de la imagen para la db
+        if ($id) {
+            $this->id = $id;
+        }
+    }
 
+    public function validarISBNeliminar()
+    {
+        //ISBN existe
+        if (!$this->id) {
+            self::$alertas["error"][] = "El ISBN es Obligatorio";
+        } else {
+            //ISBN numerico
+            if (!filter_var($this->id, FILTER_VALIDATE_INT)) {
+                self::$alertas["error"][] = "El ISBN del libro debe ser numerico sin decimales";
+            } else {
+                //ISBN no negativo
+                if (intval($this->id) < 0) {
+                    self::$alertas["error"][] = "Error en el ISBN";
+                } else {
+                    //ISBN con 13 caracteres
+                    if (strlen($this->id) !== 13) {
+                        self::$alertas["error"][] = "El ISBN debe contener exactamente 13 dígitos";
+                    }
+                }
+            }
+        }
+    }
     public function validarRegistrar()
     {
         //ISBN existe

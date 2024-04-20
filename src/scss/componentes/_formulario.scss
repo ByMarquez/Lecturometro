@@ -1,6 +1,7 @@
 @use 'base/variables' as v;
 @use 'base/mixins' as m;
 
+//login
 .formulario {
     margin-top: v.$separacion;
 
@@ -26,6 +27,12 @@
     }
 }
 
+.btn-eliminar-modificar{
+    input[type="submit"] {
+        @include m.boton(v.$rojo, v.$blanco);
+    }
+}
+
 .formulario_btnNaranja {
     margin-top: v.$separacionPequenia;
 
@@ -34,7 +41,7 @@
     }
 }
 
-
+//barra de busqueda
 .buscar {
 
     @include m.TituloPrincipal {
@@ -79,7 +86,7 @@
 
 }
 
-
+//lista de estadisticas
 .formulario-lista {
     select {
         background-color: lighten(v.$verde, 50);
@@ -92,6 +99,7 @@
     }
 }
 
+//formulario para registrar libro
 .formulario-crear {
     margin-top: 0;
     textarea {
@@ -105,3 +113,50 @@
         margin-bottom: v.$separacionPequenia;
     }
 }
+
+//formulario para usuarios
+.formulario-tabla{
+    margin-bottom: v.$separacion;
+    table{
+        display: flex;
+        justify-content: center;
+
+        input{
+        max-width: v.$separacion*2;
+        }
+        th, td {
+            padding: .5rem;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        tr {
+            background-color: #f2f2f2;
+            td:first-of-type{
+                text-align: left;
+            }
+        }
+    }
+    .btn-crear{
+        display: flex;
+        justify-content: center;
+        input[type="submit"] {
+            @include m.boton(v.$verde, v.$blanco);
+        }
+    }
+    .btn-actualizar{
+        display: flex;
+        justify-content: center;
+        input[type="submit"] {
+            @include m.boton(v.$naranja, v.$blanco);
+        }
+    }
+    .btn-eliminar{
+        display: flex;
+        justify-content: center;
+        input[type="submit"] {
+            @include m.boton(v.$rojo, v.$blanco);
+        }
+    }
+}
+
+

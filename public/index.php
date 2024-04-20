@@ -26,14 +26,22 @@ $router->get('/mensaje', [loginController::class,'mensaje']);
 
 //Dashboard
 $router->get('/dashboard', [dashboardController::class,'index']);
+
 $router->get('/mis-libros', [dashboardController::class,'mislibros']);
 $router->post('/mis-libros', [dashboardController::class,'mislibros']);
+
 $router->get('/registrar', [dashboardController::class,'registrar']);
 $router->post('/registrar', [dashboardController::class,'registrar']);
+
+$router->get('/permisos', [dashboardController::class,'permisos']);
+$router->post('/permisos', [dashboardController::class,'permisos']);
+
 $router->get('/modificar', [dashboardController::class,'modificar']);
 $router->post('/modificar', [dashboardController::class,'modificar']);
+
 $router->get('/estadisticas', [dashboardController::class,'estadisticas']);
 $router->post('/estadisticas', [dashboardController::class,'estadisticas']);
+
 $router->post('/libro', [dashboardController::class,'libro']);
 $router->get('/libro', [dashboardController::class,'libro']);
 

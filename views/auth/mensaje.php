@@ -4,7 +4,6 @@
         <p class="alerta exito">
             Cuenta creada correctamente
         </p>
-        <?php include_once __DIR__ ."/../templates/alertas.php"; ?>
         <form class="formulario" action="/">
         
             <input 

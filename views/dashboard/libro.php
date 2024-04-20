@@ -19,13 +19,15 @@
                     <input type="submit" value="Leer Libro">
                 </div>
             </form>
+            <?php if (boolval($_SESSION['registrar_libro'])) { ?>
+                <form action="/modificar" method="GET" class="formulario formulario_btnNaranja">
+                    <input type="hidden" name="id_actualizacion" value="<?php echo $libro->id; ?>">
+                    <div class="campo">
+                        <input type="submit" value="Modificar datos de Libro">
+                    </div>
+                </form>
+            <?php } ?>
 
-            <form action="/modificar" method="GET" class="formulario formulario_btnNaranja">
-                <input type="hidden" name="id_actualizacion" value="<?php echo $libro->id; ?>">
-                <div class="campo">
-                    <input type="submit" value="Modificar datos de Libro">
-                </div>
-            </form>
         </div><!--libro-->
 
         <div><!-- Contenedor para mostrar resultados de búsqueda-->

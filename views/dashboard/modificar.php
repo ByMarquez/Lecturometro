@@ -4,6 +4,20 @@
     <div class="contenedor-sm">
         <?php include_once __DIR__ . '/../templates/alertas.php' ?>
         <form class="formulario" method="POST" action="/modificar" enctype="multipart/form-data">
+            <input type="hidden" name="isbn_ori" value="<?php echo $libro->id; ?>">
+            <input type="checkbox" id="cambiar_lecturas" name="cambiar_isbn">
+            <label for="cambiar_lecturas">Si se cambia este dato, se cambiarán las lecturas de todos los usuarios
+                referenciadas a este ISBN</label>
+            <script>
+                document.getElementById('cambiar_lecturas').addEventListener('change', function () {
+                    var inputISBN = document.getElementById('id');
+                    if (this.checked) {
+                        inputISBN.removeAttribute('readonly');
+                    } else {
+                        inputISBN.setAttribute('readonly', 'readonly');
+                    }
+                });
+            </script>
             <div class="campo">
                 <label for="isbn">ISBN</label>
                 <input type="text" name="id" id="id" placeholder="Código ISBN del Libro"
@@ -37,6 +51,10 @@
                 <img src="build/imagenes/<?php echo $libro->imagen ?>" class="imagen-small">
             <?php } ?>
             <input type="submit" value="Actualizar libro">
+        </form>
+        <form class="formulario btn-eliminar-modificar" method="POST" action="/modificar">
+            <input type="hidden" name="isbn_eliminar" value="<?php echo $libro->id; ?>">
+            <input type="submit" value="Eliminar libro">
         </form>
 
     </div>
