@@ -15,10 +15,10 @@
                     <td>
                         <input type="text" name="id_usuario_crear">
                     </td>
-                    <td><input type="radio" name="registrar_libro" value="1"> Sí
+                    <td><input type="radio" name="registrar_libro" value="1" required> Sí
                         <input type="radio" name="registrar_libro" value="0"> No
                     </td>
-                    <td><input type="radio" name="registrar_usuarios" value="1"> Sí
+                    <td><input type="radio" name="registrar_usuarios" value="1" required> Sí
                         <input type="radio" name="registrar_usuarios" value="0"> No
                     </td>
                 </tr>
@@ -85,7 +85,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" name="id_usuario_eliminar">
+                        <input type="number" name="id_usuario_eliminar" required maxlength="6">
                     </td>
                 </tr>
                 <!-- Agrega más filas según sea necesario para más usuarios -->

@@ -20,27 +20,27 @@
             </script>
             <div class="campo">
                 <label for="isbn">ISBN</label>
-                <input type="text" name="id" id="id" placeholder="Código ISBN del Libro"
+                <input type="number" name="id" id="id" placeholder="Código ISBN del Libro" maxlength="13" required
                     value="<?php echo $libro->id; ?>" readonly>
             </div>
             <div class="campo">
                 <label for="titulo">Título</label>
-                <input type="text" name="titulo" id="titulo" placeholder="Título Identificador del Libro"
+                <input type="text" name="titulo" id="titulo" placeholder="Título Identificador del Libro" maxlength="80" required
                     value="<?php echo $libro->titulo; ?>">
             </div>
             <div class="campo">
                 <label for="genero">Genero Literario </label>
-                <input type="text" name="genero" id="genero" placeholder="Genero del Libro"
+                <input type="text" name="genero" id="genero" placeholder="Genero del Libro" maxlength="30" required
                     value="<?php echo $libro->genero; ?>">
             </div>
             <div class="campo">
                 <label for="autor">Autor</label>
-                <input type="text" name="autor" id="autor" placeholder="Autor del Libro"
+                <input type="text" name="autor" id="autor" placeholder="Autor del Libro" maxlength="50" required
                     value="<?php echo $libro->autor; ?>">
             </div>
             <div class="campo">
                 <label for="paginas">Paginas</label>
-                <input type="text" name="paginas" id="paginas" placeholder="Paginas del Libro"
+                <input type="number" name="paginas" id="paginas" placeholder="Paginas del Libro" maxlength="6" required
                     value="<?php echo $libro->paginas; ?>">
             </div>
             <div class="campo">

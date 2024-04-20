@@ -43,6 +43,10 @@ class comentario extends ActiveRecord
         }else{
             if (strlen($this->comentario)<10) {
                 self::$alertas["error"][] = "El comentario es demasiado corto";
+            }else{
+                if (strlen($this->comentario)>280) {
+                    self::$alertas["error"][] = "El comentario es demasiado largo";
+                }
             }
         }
         if (!$this->fecha) {

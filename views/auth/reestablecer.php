@@ -12,7 +12,9 @@
                     type="password"
                     id="password"
                     placeholder="Tu Cotraseña"
-                    name="password">
+                    name="password"
+                    maxlength="50"
+                    required>
             </div>
             <div class="campo">
                 <label for="password2">Confirma tu Contraseña</label>
@@ -20,7 +22,9 @@
                     type="password"
                     id="password2"
                     placeholder="Confirma tu Cotraseña"
-                    name="password2">
+                    name="password2"
+                    maxlength="50"
+                    required>
             </div>
             <input 
             type="submit"

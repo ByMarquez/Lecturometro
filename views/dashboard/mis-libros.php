@@ -40,7 +40,13 @@
 
                                 <form action="/mis-libros" method="POST" class="formulario formulario-actualizar">
                                     <div class="campo">
-                                        <input type="text" name="paginas_leidas" placeholder="Paginas Leidas">
+                                        <input type="number" name="paginas_leidas" placeholder="Paginas Leidas" maxlength="6" required 
+                                        <?php
+                                    if ($lectura->estatus === "1") {
+                                        echo 'readonly';
+                                    } 
+                                    ?>
+                                        >
                                     </div>
                                     <input type="hidden" name="libros_id_actualizar" value="<?php echo $lectura->libros_id;?>">
                                     <div class="campo">

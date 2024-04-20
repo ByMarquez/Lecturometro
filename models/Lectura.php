@@ -55,6 +55,10 @@ class Lectura extends ActiveRecord
             }else{
                 if (strlen($this->paginas_leidas)>3) {
                     self::$alertas["error"][] = "Hay muchos dígitos en el número de paginas";
+                }else{
+                    if (intval($this->paginas_leidas)<0) {
+                        self::$alertas["error"][] = "Hay paginas negativas";
+                    }
                 }
             }
         }

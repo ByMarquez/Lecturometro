@@ -12,7 +12,9 @@
                     type="email"
                     id="correo"
                     placeholder="Tu Correo Electrónico"
-                    name="correo">
+                    name="correo"
+                    required
+                    maxlength="50">
             </div>
             <div class="campo">
                 <label for="password">Contraseña</label>
@@ -20,7 +22,9 @@
                     type="password"
                     id="password"
                     placeholder="Tu Cotraseña"
-                    name="password">
+                    name="password"
+                    required
+                    maxlength="50">
             </div>
             <input 
             type="submit"

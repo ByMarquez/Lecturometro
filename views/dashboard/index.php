@@ -3,7 +3,7 @@
 <div class="contenedor">
     <div class="contenedor-sm contenedor-md">
         <form class="buscar" method="GET">
-            <input type="text" id="buscar" placeholder="Buscar..." name="buscar">
+            <input type="text" id="buscar" placeholder="Buscar..." name="buscar" maxlength="80">
             <input type="submit" value="Buscar">
         </form>
 

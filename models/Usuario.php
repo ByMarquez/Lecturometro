@@ -31,15 +31,28 @@ class Usuario extends ActiveRecord{
     public function validarNuevaCuenta(){
         if(!$this->nombre){
             self::$alertas["error"][] = "El nombre es Obligatorio";
+        }else{
+            if(strlen($this->nombre)>50){
+                self::$alertas["error"][] = "El nombre es muy largo";
+            }
         }
         if(!$this->correo){
             self::$alertas["error"][] = "El Correo Electronico es Obligatorio";
+        }else{
+            if(strlen($this->correo)>50){
+                self::$alertas["error"][] = "El correo es muy largo";
+            }
         }
         if(!$this->password){
             self::$alertas["error"][] = "La Contraseña es Obligatoria";
-        }
-        if(strlen($this->password)<6){
-            self::$alertas["error"][] = "La Contraseña debe contener al menos 6 Caracteres";
+        }else{
+            if(strlen($this->password)<6){
+                self::$alertas["error"][] = "La Contraseña debe contener al menos 6 Caracteres";
+            }else{
+                if(strlen($this->password)>50){
+                    self::$alertas["error"][] = "La Contraseña es muy larga";
+                }
+            }
         }
         if($this->password !== $this->password2){
             self::$alertas["error"][] = "Las Contraseñas son diferentes";
@@ -62,6 +75,9 @@ class Usuario extends ActiveRecord{
         if(!filter_var($this->correo, FILTER_VALIDATE_EMAIL)){
             self::$alertas["error"][] = "El Correo Electronico no es Valido";
         }
+        if(strlen($this->password)>50){
+            self::$alertas["error"][] = "El correo electronico es muy largo";
+        }
 
         return self::$alertas;
     }
@@ -72,6 +88,9 @@ class Usuario extends ActiveRecord{
         }
         if(strlen($this->password)<6){
             self::$alertas["error"][] = "La Contraseña debe contener al menos 6 Caracteres";
+        }
+        if(strlen($this->password)>50){
+            self::$alertas["error"][] = "La Contraseña es muy larga";
         }
         if($this->password !== $this->password2){
             self::$alertas["error"][] = "Las Contraseñas son diferentes";

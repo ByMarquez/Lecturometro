@@ -7,19 +7,23 @@
     background-color: lighten(v.$verde, 50%);
     padding: v.$separacionPequenia;
     margin-bottom: v.$separacionPequenia;
-    @include m.grid(2, v.$separacionPequenia);
+    display: flex;
+    flex-direction: column;
     font-weight: v.$negritas;
     color: v.$gris;
-    .usuario {
-        text-transform: uppercase;
-        margin-bottom: .5rem;
-    }
-    .fecha {
-        text-align: end;
+    .datos{
+        display: flex;
+        justify-content: space-between;
+        div:first-of-type{
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+        }
     }
     .contenido {
         color: v.$negro;
         font-size: 1.5rem;
+        max-width: 100%;
+        overflow-wrap: break-word;
     }
 }
 .comentario:hover {

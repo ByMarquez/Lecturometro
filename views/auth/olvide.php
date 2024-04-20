@@ -12,7 +12,9 @@
                     type="email"
                     id="correo"
                     placeholder="Tu Correo Electrónico"
-                    name="correo">
+                    name="correo"
+                    maxlength="50"
+                    required>
             </div>
             <input 
             type="submit"

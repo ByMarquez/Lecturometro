@@ -1,7 +1,7 @@
 <?php include_once __DIR__ . "/header-dashboard.php"; ?>
-<?php include_once __DIR__ . '/../templates/alertas.php' ?>
 <div class="contenedor">
     <div class="contenedor-sm">
+    <?php include_once __DIR__ . '/../templates/alertas.php' ?>
         <div class="libro-registrar">
             <img loading="lazy" src="build/imagenes/<?php echo $libro->imagen; ?>" alt="Imagen de Libro">
             <div class="contenido-libro">
@@ -34,9 +34,13 @@
             <div class="listado-comentarios">
                 <?php foreach ($comentarios as $comentario) { ?>
                     <div class="comentario">
-                        <div class="usuario"><?php echo $comentario->nombre; ?></div>
-                        <div class="fecha"><?php echo $comentario->fecha; ?></div>
-                        <div class="contenido"><?php echo $comentario->comentario; ?></div>
+                        <div class="datos">
+                        <div><?php echo $comentario->nombre; ?></div>
+                        <div><?php echo $comentario->fecha; ?></div>
+                        </div>
+                        <div class="contenido">
+                        <div><?php echo $comentario->comentario; ?></div>
+                        </div>
                     </div><!--comentario-->
                 <?php } ?>
 
@@ -48,7 +52,7 @@
             <form method="POST" class="formulario formulario-crear">
                 <input type="hidden" name="id" value="<?php echo $libro->id; ?>">
                 <div class="campo">
-                    <textarea rows="5" cols="20" placeholder="tu comentario" name="comentario"></textarea>
+                    <textarea rows="5" cols="20" placeholder="tu comentario" name="comentario" maxlength="280"></textarea>
                 </div>
                 <div class="campo">
                     <input type="submit" value="Enviar Comentario">
