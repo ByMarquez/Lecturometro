@@ -29,7 +29,7 @@ class dashboardController extends ActiveRecord
         if (!is_numeric($paginaActual)) {
             header("location: /dashboard");
         }
-        $librosPorPagina = 6;
+        $librosPorPagina = 3;
         $comienzo = ($paginaActual - 1) * $librosPorPagina;
 
         $libros = Libro::startBy_page("1", "1", $comienzo, $librosPorPagina);
@@ -303,7 +303,6 @@ class dashboardController extends ActiveRecord
                             //hacer la actualizacion dejando la imagen
                             if ($consulta != $libro) {
                                 if (isset($libro->id)) {
-                                    debuguear($libro);
                                     $resultado = $libro->guardar();
                                     if ($resultado) {
                                         //dar una alerta

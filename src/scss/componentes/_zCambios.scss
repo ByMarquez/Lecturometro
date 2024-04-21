@@ -1,0 +1,227 @@
+@use 'base/mixins' as m;
+@use 'base/variables' as v;
+
+
+/*
+Acomodo en el index, se oculta
+*/
+//index
+.acciones {
+    @include m.tablet {
+        justify-content: center;
+    }
+    a{
+        color: v.$primario;
+    }
+}
+
+/*
+Colores de botones
+*/
+//colores de boton de login
+.formulario {
+    input[type="submit"] {
+        @include m.boton(v.$secundario, v.$negro)
+    }
+}
+
+//barra de busqueda
+.buscar {
+    @include m.TituloPrincipal {
+        input[type="submit"] {
+            @include m.boton(v.$secundario, v.$negro)
+        }
+    }
+
+    @include m.tablet {
+        input[type="submit"] {
+            @include m.boton(v.$secundario, v.$negro)
+        }
+    }
+}
+
+//estadisticas
+.formulario-lista {
+    select {
+        background-color: v.$terciario;
+    }
+}
+
+//libro
+.formulario-crear {
+    input[type="submit"] {
+        @include m.boton(v.$secundario, v.$negro);
+    }
+}
+
+/*
+Comentarios del libro
+*/
+//Libro
+.comentario {
+    //border: .5rem solid v.$verdeOscuro;
+    background-color: lighten(v.$terciario, 30%);
+}
+
+.comentario:hover {
+    box-shadow: 0px 0px 15px 0px lighten(v.$terciario, 20%);
+}
+
+/*
+Footer de la pagina
+*/
+//footer layout
+.footer {
+    background-color: v.$cuaternario;
+}
+
+/*
+Los libros de toda la pagina
+*/
+//index
+.listado-libros {
+    .libro {
+        background-color: lighten(v.$terciario, 30%);
+        margin-bottom: v.$separacionPequenia;
+
+        .contenido-boton {
+            a {
+                @include m.boton(v.$secundario, v.$negro);
+            }
+        }
+    }
+}
+
+//color cuando no hay libros en index, ni mis.libros
+.no-libros {
+    a {
+        color: v.$primario;
+    }
+}
+
+//libro.php
+.libro-registrar {
+    background-color: lighten(v.$terciario, 30%);
+    margin-bottom: v.$separacionPequenia;
+}
+
+//mis-libros
+.listado-lecturas {
+    .libro {
+        background-color: lighten(v.$terciario, 30%);
+
+        .contenido-boton {
+            .formulario-actualizar {
+                input[type="submit"] {
+                    @include m.boton(v.$secundario, v.$negro)
+                }
+            }
+
+            .formulario-eliminar {
+                input[type="submit"] {
+                    @include m.boton(v.$rojo, v.$blanco)
+                }
+            }
+        }
+    }
+
+}
+
+.libro-estadisticas {
+    background-color: lighten(v.$terciario, 30%);
+    .contenido-boton {
+        a {
+            @include m.boton(v.$secundario, v.$negro);
+        }
+
+    }
+}
+
+.paginacion {
+    a {
+        @include m.boton(v.$secundario, v.$negro);
+    }
+
+    @include m.tablet {
+        a {
+            @include m.boton(v.$secundario, v.$negro);
+        }
+    }
+}
+
+.lecturometro {
+    background: linear-gradient(to right, v.$primario, v.$primario);
+    color: transparent;
+    background-clip: text;
+
+    @include m.tablet {
+        font-size: v.$separacion*2;
+    }
+}
+
+.navegacion-principal {
+    background-color: v.$primario;
+    margin-bottom: v.$separacionPequenia;
+
+    .logo {
+        font-size: 4rem;
+        margin: 0 0 0 0;
+        color: v.$secundario;
+        font-weight: v.$negritas;
+    }
+
+    .enlaces {
+
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+
+        a {
+            padding: 1.5rem;
+            color: v.$blanco;
+        }
+
+        a:not(:first-of-type):hover {
+            background-color: darken(v.$primario, 10%);
+        }
+
+    }
+
+    @include m.tablet {
+        .enlaces {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+
+            text-align: center;
+        }
+
+        .enlaces a:first-of-type {
+            margin-right: auto;
+            /* Anula el alineamiento para el primer enlace */
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+.contenedor-usuarios {
+    .usuario {
+        padding: 1rem;
+        margin-top: v.$separacionPequenia;
+        background-color: lighten(v.$terciario, 30%);
+        display: flex;
+        justify-content: space-between;
+        font-size: 2rem;
+        font-weight: v.$negritas;
+
+        div:first-of-type {
+            max-width: 70%;
+        }
+    }
+
+
+}

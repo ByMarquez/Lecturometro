@@ -25,7 +25,7 @@ class Email{
         $phpmailer->Username = $_ENV["EMAIL_USER"];
         $phpmailer->Password = $_ENV["EMAIL_PASSWORD"];
 
-        $phpmailer->setFrom('jesusmarqueztrejo21@gmail.com');
+        $phpmailer->setFrom($_ENV["EMAIL_USER"]);
         $phpmailer->addAddress($this->email);
         $phpmailer->Subject = 'Reestablece tu contraseña';
 
